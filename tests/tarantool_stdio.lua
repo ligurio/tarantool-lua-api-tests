@@ -14,9 +14,9 @@ local function TestOneInput(buf)
         stderr = popen.opts.INHERIT,
         stdin = popen.opts.PIPE,
     })
-	if not ph then
-	    return
-	end
+    if not ph then
+        return
+    end
     assert(ph)
     ph:write(buf .. "\n")
     ph:shutdown({ stdin = true })

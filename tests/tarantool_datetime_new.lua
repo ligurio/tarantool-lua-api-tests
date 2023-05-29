@@ -78,8 +78,8 @@ local MIN_DATE_YEAR = -5879610
 local MAX_DATE_YEAR = 5879611
 
 local function new_dt_fmt(fdp)
-	-- Field descriptors.
-  	local desc = {
+    -- Field descriptors.
+    local desc = {
                 '%a',
                 '%A',
                 '%b',
@@ -109,24 +109,24 @@ local function new_dt_fmt(fdp)
                 '%X',
                 '%y',
                 '%Y',
-	}
-	local n = fdp:consume_integer(1, 5)
-	local fmt = ''
-	for i = 1, n do
+    }
+    local n = fdp:consume_integer(1, 5)
+    local fmt = ''
+    for _ = 1, n do
         local field_idx = fdp:consume_integer(1, #desc)
         fmt = ("%s%s"):format(fmt, desc[field_idx])
-	end
+    end
 
-	return fmt
+    return fmt
 end
 
 local function new_dt(fdp)
     local tz_idx = fdp:consume_integer(1, #datetime.TZ)
     local d = 0
-	--[[
-	Day number. Value range: 1 - 31. The special value -1 generates the last
-	day of a particular month.
-	]]
+    --[[
+    Day number. Value range: 1 - 31. The special value -1 generates the last
+    day of a particular month.
+    ]]
     while d == 0 do
         d = fdp:consume_integer(-1, 31)
     end
@@ -148,6 +148,7 @@ local function new_dt(fdp)
 end
 
 -- Minimum supported date - -5879610-06-22.
+-- luacheck: no unused
 local min_dt = {
     nsec      = 0,
     sec       = 0,
@@ -160,6 +161,7 @@ local min_dt = {
 }
 
 -- Maximum supported date - 5879611-07-11.
+-- luacheck: no unused
 local max_dt = {
     nsec      = 1000000000,
     sec       = 60,
@@ -209,12 +211,12 @@ local function TestOneInput(buf)
     local datetime_fmt = new_dt_fmt(fdp)
 
     -- Property: datetime.parse(dt:format(random_format)) == dt
-	--[[
+    --[[
     dt1 = datetime.new(time_units1)
     local dt1_str = dt1:format(datetime_fmt)
     local dt_parsed = datetime.parse(dt1_str, { format = datetime_fmt })
     assert(dt_parsed == dt1)
-	]]
+    ]]
 
     -- Property: B - (B - A) == A
     -- Blocked by: https://github.com/tarantool/tarantool/issues/7145
@@ -337,22 +339,11 @@ local function TestOneInput(buf)
     -- TODO: assert(dt1 - dt2 == single_sec, ('%s - %s != 1 sec (%s)'):format(dt1, dt2, dt1 - dt2))
 end
 
-if arg[1] then
-    local fh = io.open(arg[1])
-    local testcase = fh:read("*all")
-    TestOneInput(testcase)
-    os.exit()
-end
-
-local script_path = debug.getinfo(1).source:match("@?(.*/)")
-
 local args = {
     max_len = 2048,
     print_pcs = 1,
     detect_leaks = 1,
-    corpus = script_path .. "tarantool-corpus/datetime_new",
     artifact_prefix = "datetime_new_",
     max_total_time = 60,
-    print_final_stats = 1,
 }
 luzer.Fuzz(TestOneInput, nil, args)
