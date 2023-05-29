@@ -7,10 +7,11 @@ local net_box = require("net.box")
 
 local function TestOneInput(buf)
     os.execute("rm -f *.snap")
+    local socket_path = os.tmpname()
     box.cfg{
-        listen = 3303,
+        listen = socket_path,
     }
-    local conn = net_box.connect("3303")
+    local conn = net_box.connect(socket_path)
 	pcall(conn.call, conn, buf)
 end
 
