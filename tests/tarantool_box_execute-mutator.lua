@@ -84,14 +84,17 @@ end
 local function debug(grammar, printer)
     printer = printer or printf
     for k, p in pairs(grammar) do
+        -- luacheck: no unused
         local enter = lpeg.Cmt(lpeg.P(true), function(s, p, ...)
             printer("ENTER %s", k)
             return p
         end)
+        -- luacheck: no unused
         local leave = lpeg.Cmt(lpeg.P(true), function(s, p, ...)
             printer("LEAVE %s", k)
             return p
         end) * (lpeg.P("k") - lpeg.P "k")
+        -- luacheck: no unused
         grammar[k] = lpeg.Cmt(enter * p + leave, function(s, p, ...)
             printer("---%s---", k)
             printer("pos: %d, [%s]", p, s:sub(1, p-1))

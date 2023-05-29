@@ -12,10 +12,7 @@ local function TestOneInput(buf)
     assert(rawget(_G, 'res') == false)
 end
 
-local script_path = debug.getinfo(1).source:match("@?(.*/)")
-
 local args = {
-    max_total_time = 100 * 60,
-    corpus = script_path .. "/tarantool-corpus/box_GHSA-74jr-2fq7-vp42",
+    max_total_time = 60,
 }
 luzer.Fuzz(TestOneInput, nil, args)

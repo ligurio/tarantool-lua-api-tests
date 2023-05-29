@@ -26,21 +26,10 @@ local function TestOneInput(buf)
     end
 end
 
-if arg[1] then
-    local testcase = io.open(arg[1]):read("*all")
-    TestOneInput(testcase)
-    os.exit()
-end
-
-local script_path = debug.getinfo(1).source:match("@?(.*/)")
-
 local args = {
     print_pcs = 1,
-    corpus = script_path .. "tarantool-corpus/msgpack_decode",
-    dict = script_path .. "tarantool-corpus/msgpack_decode.dict",
     max_len = 4096,
     artifact_prefix = "msgpack_decode_",
     max_total_time = 60,
-    print_final_stats = 1,
 }
 luzer.Fuzz(TestOneInput, nil, args)

@@ -10,12 +10,6 @@ local function TestOneInput(buf)
     end
 end
 
-if arg[1] then
-    local testcase = io.open(arg[1]):read("*all")
-    TestOneInput(testcase)
-    os.exit()
-end
-
 local args = {
     max_len = 1024,
     artifact_prefix = "uri_escape_",
